@@ -7,7 +7,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 VALUE_MODEL_DIR = "meta-llama/Llama-3.2-1B-Instruct"
 global_value_model = None
 global_tokenizer = None
-
+from prompt import complete_query_from_subquery,complete_query_from_ans
+import numpy as np
+import logging
+import openai
 
 def initialize_value_model():
     """Initialize the value model and tokenizer."""
@@ -244,33 +247,33 @@ def llm_proposal(model=None,tokenizer=None,prompt=None,model_name='qwen'):
             temperature=0.0,
         )
 
-    elif model_name == 'llama':
+    # elif model_name == 'llama':
 
-        image = Image.open(img_path)
+    #     image = Image.open(img_path)
 
-        messages = [
-            {"role": "user", "content": [
-                {"type": "image"},{"type": "text","text": f"{prompt}"}]}
-                ]
-        input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
-        inputs = processor(
-            image,
-            input_text,
-            add_special_tokens=False,
-            return_tensors="pt"
-        ).to(model.device)
+    #     messages = [
+    #         {"role": "user", "content": [
+    #             {"type": "image"},{"type": "text","text": f"{prompt}"}]}
+    #             ]
+    #     input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+    #     inputs = processor(
+    #         image,
+    #         input_text,
+    #         add_special_tokens=False,
+    #         return_tensors="pt"
+    #     ).to(model.device)
 
-        output = model.generate(**inputs, max_new_tokens=512)
-        output_text = processor.decode(output[0])
-        split_text = output_text.split("<|end_header_id|>", 2)  # 최대 2번만 분할
+    #     output = model.generate(**inputs, max_new_tokens=512)
+    #     output_text = processor.decode(output[0])
+    #     split_text = output_text.split("<|end_header_id|>", 2)  # 최대 2번만 분할
 
-        # 두 번째 "<|end_header_id|>" 이후 부분 가져오기 (있다면)
-        cleaned_text = split_text[2].strip()
-        cleaned_text = cleaned_text.replace("<|eot_id|>", "")
-        # print('get_proposal:최종 텍스트:')
-        # print(cleaned_text)
-        return cleaned_text
+    #     # 두 번째 "<|end_header_id|>" 이후 부분 가져오기 (있다면)
+    #     cleaned_text = split_text[2].strip()
+    #     cleaned_text = cleaned_text.replace("<|eot_id|>", "")
+    #     # print('get_proposal:최종 텍스트:')
+    #     # print(cleaned_text)
+    #     return cleaned_text
 
-        # 🎯 출력 결과
-        reply = response['choices'][0]['message']['content'].strip()
-        return reply
+    #     # 🎯 출력 결과
+    #     reply = response['choices'][0]['message']['content'].strip()
+    #     return reply

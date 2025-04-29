@@ -1,4 +1,4 @@
-from retrieval_lm.passage_retrieval import Retriever
+from passage_retrieval import Retriever
 retriever = Retriever({})
 retriever.setup_retriever_demo("facebook/contriever-msmarco", "enwiki_2020_intro_only/enwiki_2020_dec_intro_only.jsonl", "enwiki_2020_intro_only/enwiki_dec_2020_contriever_intro/*",  n_docs=5, save_or_load_index=False)
 

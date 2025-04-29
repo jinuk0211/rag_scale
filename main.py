@@ -2,6 +2,8 @@ from collections import defaultdict
 from evaluator import GPQAEvaluator
 from generator import Generator, load_vLLM_model
 from prompt import rag_prompt, eval_prompt
+from generator import retriever
+import numpy as np
 evaluator = GPQAEvaluator()
 tokenizer, model = load_vLLM_model(cfg.model_ckpt, cfg.seed, cfg.tensor_parallel_size, cfg.half_precision)
 generator = Generator(cfg, tokenizer, model, evaluator)
@@ -139,3 +141,6 @@ cfg.mcts_num_last_votes = 3
         # self.mcts_num_last_votes = args.mcts_num_last_votes
 
         # with open(args.decompose_template_path, "r") as f:
+
+if __name__ == "__main__":
+  retriever.search_document_demo("What is the relationship between the lifetime of a quantum state and its energy uncertainty?",1)
