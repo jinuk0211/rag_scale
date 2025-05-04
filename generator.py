@@ -59,7 +59,6 @@ class GeneratorError(Exception):
         self.source = source
         self.io_input = io_input
         self.io_output_list = io_output_list
-
 class IO_System:
     """Input/Output system"""
 
@@ -228,19 +227,19 @@ class Generator:
         }
 
 
-    # def _get_most_likely_answer(self.io_output_list: List[str]) -> Tuple[str, float]:
-    #         assert len(io_output_list) > 0
+    def _get_most_likely_answer(self.io_output_list: List[str]) -> Tuple[str, float]:
+        assert len(io_output_list) > 0
 
-    #         if len(io_output_list) == 1:
-    #             most_confident_answer_full_completion = io_output_list[0]
-    #             confidence = 1
-    #         else:
-    #             _, most_confident_answer_full_completion, _, confidence = self.evaluator.find_most_confident_answer(
-    #                 io_output_list
-    #             )
-    #             assert confidence > 0
+        if len(io_output_list) == 1:
+            most_confident_answer_full_completion = io_output_list[0]
+            confidence = 1
+        else:
+            _, most_confident_answer_full_completion, _, confidence = self.evaluator.find_most_confident_answer(
+                io_output_list
+            )
+            assert confidence > 0
 
-    #         return most_confident_answer_full_completion, confidence
+        return most_confident_answer_full_completion, confidence
 
     def _fewshot_cot_answer_question(self, question: str, paraphrased: bool, num_return: int, hint: str = None):
         # fewshot_cot_prompt = self.fewshot_cot_prompt if not paraphrased else self.fewshot_cot_prompt_rephrased
@@ -620,7 +619,7 @@ class Generator:
             return potential_score_output, final_answer
         else:
             final_answer = [None] * len(subquestion_list)
-            return False
+          return False
 
 
 
