@@ -7,7 +7,8 @@ from transformers import AutoTokenizer
 import numpy as np
 import math
 from evaluator import Evaluator
-from collection import defaultdict, List, Dict, Tuple
+from collections import defaultdict
+from typing import List, Dict, Tuple
 
 def load_vLLM_model(model_ckpt, seed, tensor_parallel_size=1, half_precision=True, max_num_seqs=256):
     import os
