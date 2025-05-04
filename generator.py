@@ -550,6 +550,28 @@ class Generator:
 
 
         return cleaned_io_output_list,subquestion_list, subanswer_list, value_list
+            
+    def score(self,eval_prompt: str):
+        
+        output = self.io.generate(
+            eval_prompt,
+            max_tokens=512,
+            num_return=1,
+            stop_tokens=['\n\n\n'],)
+        
+        only_score_prompt = "Output: " + output + "\nTherefore, the answer (arabic numerals) is"
+
+        score = self.io.generate(
+                  only_score_prompt,
+                  num_return=1,
+                  max_tokens=10,
+                  stop_tokens=['\n','\n\n'],
+                  # stop_tokens='\n\n\n',
+              )
+        print(score)
+        # if "Score:" in output:
+        #     output.split
+        return score
 
 
     def final_output(self, user_question, subquestion_list,subanswer_list,score):
