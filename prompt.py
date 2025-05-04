@@ -1,5 +1,5 @@
-rag_prompt = f"Context:{context}\n Question:{question}"
-eval_prompt = f'''You are an expert evaluator for Retrieval-Augmented Generation (RAG) systems.
+rag_prompt = "Context:{context}\n Question:{question}"
+eval_prompt = '''You are an expert evaluator for Retrieval-Augmented Generation (RAG) systems.
 Given a user question and the retrieved context passages, assess the overall quality based on the following criteria:
 
 Relevance: How relevant is the retrieved context to the user’s question?
@@ -17,9 +17,7 @@ Please score each criterion on a scale of 1–5 (1 = Very Poor, 5 = Excellent) a
 Finally, give an overall quality rating (1–5) and briefly summarize your judgment.
 Example Input:
 
-Question: {question}
-
-Retrieved Context: {context}
+{content}
 '''
 
 complete_query_from_ans = """Given intermediate answer containing the facts about the original question, which is unknown, your task is to infer what the orginal question might have been.
@@ -30,7 +28,7 @@ Here are some examples:
 Example 1:
 Intermediate answer:
 Muhammad Ali was 74 years old when he died.
-Alan Turing was 41 years old when he died.
+Alan Turing* was 41 years old when he died.
 The original question might be:
 Who lived longer, Muhammad Ali or Alan Turing?
 

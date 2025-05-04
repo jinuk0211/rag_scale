@@ -131,11 +131,6 @@ def get_token_probabilities(text, idx, inputs=None):
 
 def get_query_token_probabilities(context, query):
     """
-    获取query部分的token概率
-
-    Args:
-        context (str): 前文上下文
-        query (str): 要计算概率的查询文本
 
     Returns:
         list: query部分token的log概率列表
@@ -168,7 +163,7 @@ def get_query_token_probabilities(context, query):
         return []
 
 
-def probability_subquestion_question(ori_query, query, answer, ans_weight=0.75):
+def probability_subquestion_question(ori_query, query, ans_weight=0.75):
 
     try:
 
@@ -192,7 +187,7 @@ def probability_subquestion_question(ori_query, query, answer, ans_weight=0.75):
         logging.error(f"Error in risk value calculation: {str(e)}")
         return 0.0
 
-def probability_subanswer_question(ori_query, query, answer, ans_weight=0.75):
+def probability_subanswer_question(ori_query, answer, ans_weight=0.75):
 
     try:
         # 计算answer条件下的原始query概率

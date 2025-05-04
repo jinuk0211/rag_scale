@@ -3,6 +3,7 @@ pip install huggingface_hub
 pip install faiss-cpu
 pip install vllm transformers
 pip install easydict
+pip install datasets
 git clone https://github.com/AkariAsai/self-rag.git -q
 cd self-rag
 pip install -r requirements.txt -q

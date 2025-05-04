@@ -60,7 +60,7 @@ cfg.num_subquestions = 3
 cfg.num_votes = 3
 cfg.max_tokens = 256
 cfg.enable_potential_score = True
-
+cfg.num_subquestions = 5
 cfg.mcts_num_last_votes = 3
 # generator arg
         # if not args.disable_rag:
