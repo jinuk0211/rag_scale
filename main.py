@@ -29,7 +29,8 @@ if __name__ == "__main__":
     value_list = []
     final_questions = []
     subquestions_retrieval=[]
-    
+    best_subquestion = None  # 또는 ""로 초기화
+
     rag_score_dict = defaultdict()
   #-------------------subquestion------------------
     subquestions = generator.generate_subquestions(question,'')
@@ -47,13 +48,19 @@ if __name__ == "__main__":
         retrieved_documents = retriever.search_document_demo(subquestion, 3)
         for retrieved_document in retrieved_documents:
           # score = llm_proposal(eval_prompt.format(rag_prompt.format(retrieved_document,subquestion)))
-          score = generate_with_vLLM_model(model,eval_prompt.format(rag_prompt.format(retrieved_document,subquestion)))
-          if score > best_score:
+          score = generate_with_vLLM_model(model,eval_prompt.format(content=rag_prompt.format(context=retrieved_document['text'],question=subquestion)))
+          if isinstance(score, int) and score > best_score:
             best_score = score
             best_subquestion = subquestion
             best_subquestion_retrieval = retrieved_document
-        subquestions_retrieval.append(rag_prompt.format(best_subquestion_retrieval,best_subquestion),best_score)
-
+        if best_subquestion:
+            subquestions_retrieval.append(rag_prompt.format(context=best_subquestion_retrieval,question=best_subquestion),best_score)
+        else:
+            # subquestions_retrieval.append(rag_prompt.format(context=subquestion,question=retrieved_documents[0]['text']),'score가 점수아님')
+            subquestions_retrieval.append((
+    rag_prompt.format(context=subquestion, question=retrieved_documents[0]['text']),
+    'score가 점수아님'
+))
       else:
         pass
         #subquestions의 retrieval을 평가
