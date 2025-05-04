@@ -1,6 +1,6 @@
 from collections import defaultdict
 from evaluator import GPQAEvaluator
-from generator import Generator, load_vLLM_model
+from generator import Generator, load_vLLM_model, generate_with_vLLM_model
 from prompt import rag_prompt, eval_prompt
 from generator import retriever
 import numpy as np
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         retrieved_documents = retriever.search_document_demo(subquestion, 3)
         for retrieved_document in retrieved_documents:
           # score = llm_proposal(eval_prompt.format(rag_prompt.format(retrieved_document,subquestion)))
-          score = generate_with_vLLM_model(eval_prompt.format(rag_prompt.format(retrieved_document,subquestion)))
+          score = generate_with_vLLM_model(model,eval_prompt.format(rag_prompt.format(retrieved_document,subquestion)))
           if score > best_score:
             best_score = score
             best_subquestion = subquestion
@@ -60,7 +60,7 @@ if __name__ == "__main__":
       if rag_only_one:#1개만 retrieve하고 subquestion들의 rag 프롬프트 비교
         top_doc = retriever.search_document_demo(i, 1)[0]
         subquestion_retrieval_score_prompt = eval_prompt.format(top_doc,subquestion)
-        score = llm_proposal(subquestion_retrieval_score_prompt)    # llm score
+        score = generate_with_vLLM_model(subquestion_retrieval_score_prompt)    # llm score
         subquestions_retrieval.append((rag_prompt.format(top_doc,subquestion), score))
         subquestions_retrieval = sorted(subquestions_retrieval, key=lambda x: x[1], reverse=True)
       else:

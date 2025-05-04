@@ -227,7 +227,7 @@ class Generator:
         }
 
 
-    def _get_most_likely_answer(self.io_output_list: List[str]) -> Tuple[str, float]:
+    def _get_most_likely_answer(self, io_output_list: List[str]) -> Tuple[str, float]:
         assert len(io_output_list) > 0
 
         if len(io_output_list) == 1:
@@ -554,7 +554,7 @@ class Generator:
 
     def final_output(self, user_question, subquestion_list,subanswer_list,score):
               #! generate potential answer to the user question
-        final_answer: List[List[str]] = []
+        final_answer = []
         # if self.enable_potential_score:
         if True:
             potential_score_input = "context: "
@@ -598,7 +598,7 @@ class Generator:
                   except Exception as e:
                       raise GeneratorError(
                           source="generate answer to subquestions",
-                          io_input=io_input_list[i],
+                          io_input=potential_score_input,
                           io_output_list=cleaned_io_output_group,
                       )
                   final_answer.append(most_likely_answer)
@@ -619,7 +619,7 @@ class Generator:
             return potential_score_output, final_answer
         else:
             final_answer = [None] * len(subquestion_list)
-          return False
+            return False
 
 
 
