@@ -5,11 +5,16 @@ from prompt import rag_prompt, eval_prompt
 from generator import retriever
 import numpy as np
 from cfg import cfg
+from huggingface_hub import login
+
+# login(token="")
+
 evaluator = GPQAEvaluator()
 tokenizer, model = load_vLLM_model(cfg.model_ckpt, cfg.seed, cfg.tensor_parallel_size, cfg.half_precision)
 generator = Generator(cfg, tokenizer, model, evaluator)
-
-for i in range(len(ds['train']['Question'])):
+ds = 
+# for i in range(len(ds['train']['Question'])):
+for i in range(3):
   question = ds['train']['Question'][i]
   value_list = []
   final_questions = []
