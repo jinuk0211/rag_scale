@@ -559,7 +559,7 @@ class Generator:
             num_return=1,
             stop_tokens=['\n\n\n'],)
         
-        only_score_prompt = "Output: " + output + "\nTherefore, the answer (arabic numerals) is"
+        only_score_prompt = output + "\nTherefore, the final score (0-100) is"
 
         score = self.io.generate(
                   only_score_prompt,
@@ -569,6 +569,8 @@ class Generator:
                   # stop_tokens='\n\n\n',
               )
         print(score)
+        number = re.findall(r'\d+', score)        # 숫자 문자열 추출: ['42', '2025']
+        score = int(number[0])
         # if "Score:" in output:
         #     output.split
         return score
