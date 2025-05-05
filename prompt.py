@@ -19,7 +19,11 @@ Example Input:
 
 {content}
 '''
-
+def eval_prompt(content):
+    return [
+        {"role": "system", "content": "You are an expert evaluator for Retrieval-Augmented Generation (RAG) systems. Given a user question and the retrieved context passages, assess the overall quality"},
+        {"role": "user", "content": content}
+    ]
 complete_query_from_ans = """Given intermediate answer containing the facts about the original question, which is unknown, your task is to infer what the orginal question might have been.
 Output the most likely original question directly and nothing else.
 
