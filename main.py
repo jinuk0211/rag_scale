@@ -10,6 +10,7 @@ from datasets import load_dataset, Dataset
 from verify import initialize_value_model, probability_subanswer_question, probability_subquestion_question
 import torch
 import time
+from evaluate import run_evaluation
 initialize_value_model()
 
 
@@ -17,17 +18,21 @@ evaluator = GPQAEvaluator()
 tokenizer, model = load_vLLM_model(cfg.model_ckpt, cfg.seed, cfg.tensor_parallel_size, cfg.half_precision)
 generator = Generator(cfg, tokenizer, model, evaluator)
 ds = load_dataset("Idavidrein/gpqa", "gpqa_diamond")
+split = 2
+df = ds['train'].select(range(split)).to_pandas()
 # 변수설정
 reranker = True
 rag_only_one = False
 critic = False
-
+output_list = []
+input_list = []
 if __name__ == "__main__":
   # retriever.search_document_demo("What is the relationship between the lifetime of a quantum state and its energy uncertainty?",1)
 # for i in range(len(ds['train']['Question'])):
   with torch.no_grad():
-    for i in range(2):
+    for i in range(split):
       question = ds['train']['Question'][i]
+      input_list.append(question)
       value_list = []
       final_questions = []
       subquestions_retrieval=[]
@@ -74,8 +79,9 @@ if __name__ == "__main__":
     #-------------------final_output--------------------
       output, only_answer = final_output(user_question, final_questions,self_consistency_subanswer_list)
       torch.cuda.empty_cache()
-    evaluator.evaluate(only_answer, ds['train']['Correct Answer'][i])
-
+      output_list.append(only_answer)
+    run_evaluate(df,input_list,output_list)
+# def run_evaluation(df, input_list, output_list,start_index=0, dataset_name='gpqa', output_dir='/content/output', split=1, apply_backoff=False):
 
 
 

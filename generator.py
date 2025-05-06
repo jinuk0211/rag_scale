@@ -576,74 +576,73 @@ class Generator:
         return score
 
 
-    def final_output(self, user_question, subquestion_list,subanswer_list,score):
+    def final_output(self, user_question, subquestion_list,subanswer_list,get_most_likely=True):
               #! generate potential answer to the user question
         final_answer = []
         # if self.enable_potential_score:
-        if True:
-            potential_score_input = "context: "
-            for subq, suba in zip(subquestion_list, subanswer_list):
-                # if reach_terminal_subquestion(subq, user_question):
-                #     final_answer.append(None)
-              potential_score_input += "subquestion: " + subq + "\n" +"answer: " + suba + '\n'
-            potential_score_input += "original question: " + user_question + "\n"
-            potential_score_input += "Please answer the original question based on subquestion-answer pairs"
-            print(potential_score_input)
-            potential_score_output = self.io.generate(
-                potential_score_input,
-                num_return=3,
-                max_tokens=128,
+    
+        potential_score_input = "context: "
+        for subq, suba in zip(subquestion_list, subanswer_list):
+            # if reach_terminal_subquestion(subq, user_question):
+            #     final_answer.append(None)
+            potential_score_input += "subquestion: " + subq + "\n" +"answer: " + suba + '\n'
+        potential_score_input += "original question: " + user_question + "\n"
+        potential_score_input += "Please answer the original question based on subquestion-answer pairs"
+        print(potential_score_input)
+        potential_score_output = self.io.generate(
+            potential_score_input,
+            num_return=3,
+            max_tokens=128,
+            stop_tokens=self.fewshot_cot_config["stop_tokens"],
+            # stop_tokens='\n\n\n',
+        )
+        potential_score_input2 = [
+            "Question: "
+            + user_question
+            + "\nAnswer: "
+            + z
+            + "\nTherefore, the answer is"
+            for z in potential_score_output
+        ]
+        if get_most_likely:
+            io_output_list = self.io.generate(
+                potential_score_input2,
+                num_return=1,
+                max_tokens=20,
                 stop_tokens=self.fewshot_cot_config["stop_tokens"],
                 # stop_tokens='\n\n\n',
             )
-            potential_score_input2 = [
-                "Question: "
-                + user_question
-                + "\nAnswer: "
-                + z
-                + "\nTherefore, the answer (arabic numerals) is"
-                for z in potential_score_output
+            cleaned_io_output_list = [
+                [io_output.strip() for io_output in io_output_group] for io_output_group in io_output_list
             ]
-            if score:
-              io_output_list = self.io.generate(
-                  potential_score_input2,
-                  num_return=1,
-                  max_tokens=128,
-                  stop_tokens=self.fewshot_cot_config["stop_tokens"],
-                  # stop_tokens='\n\n\n',
-              )
-              cleaned_io_output_list = [
-                  [io_output.strip() for io_output in io_output_group] for io_output_group in io_output_list
-              ]
 
-              for i, cleaned_io_output_group in enumerate(cleaned_io_output_list):
-                  try:
-                      most_likely_answer, likelihood = self._get_most_likely_answer(cleaned_io_output_group)
-                  except Exception as e:
-                      raise GeneratorError(
-                          source="generate answer to subquestions",
-                          io_input=potential_score_input,
-                          io_output_list=cleaned_io_output_group,
-                      )
-                  final_answer.append(most_likely_answer)
+            for i, cleaned_io_output_group in enumerate(cleaned_io_output_list):
+                try:
+                    most_likely_answer, likelihood = self._get_most_likely_answer(cleaned_io_output_group)
+                except Exception as e:
+                    raise GeneratorError(
+                        source="generate answer to subquestions",
+                        io_input=potential_score_input,
+                        io_output_list=cleaned_io_output_group,
+                    )
+                final_answer.append(most_likely_answer)
 
-            else:
-              cleaned_io_output_list = self.io.generate(
-                  potential_score_input2,
-                  num_return=1,
-                  max_tokens=128,
-                  stop_tokens=self.fewshot_cot_config["stop_tokens"],
-                  # stop_tokens='\n\n\n',
-              )
-              cleaned_io_output_list = [z[0] for z in cleaned_io_output_list]
+        # else:
+        #     cleaned_io_output = self.io.generate(
+        #         potential_score_input2,
+        #         num_return=1,
+        #         max_tokens=128,
+        #         stop_tokens=self.fewshot_cot_config["stop_tokens"],
+        #         # stop_tokens='\n\n\n',
+        #     )
+        #     cleaned_io_output = cleaned_io_output[0]
 
-            final_answer.append(
-                [self.evaluator.extract_answer_from_model_completion(o) for o in cleaned_io_output_list]
-            )
-            return potential_score_output, final_answer
-        else:
-            final_answer = [None] * len(subquestion_list)
-            return False
+        # final_answer.append(
+        #     self.evaluator.extract_answer_from_model_completion(cleaned_io_output) 
+        # )
+        return potential_score_output, final_answer[0]
+  
+            
 
 
 
@@ -670,8 +669,8 @@ class Generator:
 
         print(f"Rephrased user question is: {rephrased_user_question_list}")
 
-        #! generate potential answer to the user question
-        final_answer: List[List[str]] = []  # essentially direct answer list
+    
+        
 
         return rephrased_question
 
