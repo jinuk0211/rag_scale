@@ -80,7 +80,7 @@ if __name__ == "__main__":
       output, only_answer = final_output(user_question, final_questions,self_consistency_subanswer_list)
       torch.cuda.empty_cache()
       output_list.append(only_answer)
-    run_evaluate(df,input_list,output_list)
+    run_evaluate(df,input_list,output_list, output_dir='/workspace/output')
 # def run_evaluation(df, input_list, output_list,start_index=0, dataset_name='gpqa', output_dir='/content/output', split=1, apply_backoff=False):
 
 
