@@ -141,6 +141,10 @@ class IO_System:
                         for resp_to_single_input in vllm_response
                     ]
                 )
+            elif self.api == 'huggingface':
+                io_output_list = llm_proposal(self.model, self.tokenizer, model_input)
+
+            
             elif self.api == "gpt-4o":
                 io_output_list = generate_prompts_with_OpenAI_model(
                     prompts=model_input,
